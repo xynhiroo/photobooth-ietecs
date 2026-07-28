@@ -12,10 +12,9 @@ interface CameraFeedProps {
   };
   onCapture: (image: string) => void;
   countdown: number;
-  burstCount: number;
 }
 
-const CameraFeed = ({ filters, onCapture, countdown, burstCount }: CameraFeedProps) => {
+const CameraFeed = ({ filters, onCapture, countdown }: CameraFeedProps) => {
   const webcamRef = useRef<Webcam>(null);
   const [isCapturing, setIsCapturing] = useState(false);
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
@@ -55,27 +54,21 @@ const CameraFeed = ({ filters, onCapture, countdown, burstCount }: CameraFeedPro
     setIsCapturing(true);
 
     const takeShots = async () => {
-      for (let i = 0; i < burstCount; i++) {
-        // Run countdown if needed
-        if (countdown > 0) {
-          for (let c = countdown; c > 0; c--) {
-            setCurrentCountdown(c);
-            await new Promise(resolve => setTimeout(resolve, 1000));
-          }
-        }
-        
-        setCurrentCountdown(null);
-        
-        // Trigger Flash
-        setFlash(true);
-        captureSingle();
-        
-        setTimeout(() => setFlash(false), 150);
-        
-        if (i < burstCount - 1) {
-          await new Promise(resolve => setTimeout(resolve, 800)); // Delay between burst shots
+      // Run countdown if needed
+      if (countdown > 0) {
+        for (let c = countdown; c > 0; c--) {
+          setCurrentCountdown(c);
+          await new Promise(resolve => setTimeout(resolve, 1000));
         }
       }
+      
+      setCurrentCountdown(null);
+      
+      // Trigger Flash
+      setFlash(true);
+      captureSingle();
+      
+      setTimeout(() => setFlash(false), 150);
       setIsCapturing(false);
     };
 

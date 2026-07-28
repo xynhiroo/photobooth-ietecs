@@ -23,6 +23,7 @@ const Home = () => {
       
       {/* Hero Section */}
       <section className="relative min-h-[85vh] flex flex-col items-center justify-center text-center pt-20">
+        <div className="absolute inset-0 -z-20 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:24px_24px] opacity-20 mask-image:linear-gradient(to_bottom,white,transparent)"></div>
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -42,9 +43,9 @@ const Home = () => {
             <span>The Next Generation Digital Photobooth</span>
           </motion.div>
           
-          <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-black tracking-tight leading-tight mb-6">
+          <motion.h1 variants={fadeIn} className="text-5xl md:text-7xl font-black tracking-tight leading-tight mb-6 relative z-10">
             Capture Magic Moments <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 via-pink-400 to-blue-400">
+            <span className="text-brand-400 drop-shadow-[0_0_15px_rgba(139,92,246,0.6)]">
               Anywhere, Anytime.
             </span>
           </motion.h1>
@@ -87,11 +88,11 @@ const Home = () => {
                <motion.div 
                  animate={{ y: [-10, 10, -10], rotate: [-5, -2, -5] }}
                  transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-                 className="absolute -right-10 top-10 w-32 h-64 bg-white p-2 rounded shadow-2xl flex flex-col gap-2"
+                 className="absolute -right-10 top-10 w-32 bg-white p-2 pb-6 rounded shadow-2xl flex flex-col gap-2"
                >
-                 <div className="bg-slate-200 flex-1 rounded-sm"></div>
-                 <div className="bg-slate-300 flex-1 rounded-sm"></div>
-                 <div className="bg-slate-400 flex-1 rounded-sm"></div>
+                 <div className="aspect-[4/3] w-full bg-gradient-to-tr from-orange-400 to-pink-500 rounded-sm"></div>
+                 <div className="aspect-[4/3] w-full bg-gradient-to-tr from-brand-400 to-blue-500 rounded-sm"></div>
+                 <div className="aspect-[4/3] w-full bg-gradient-to-tr from-emerald-400 to-teal-500 rounded-sm"></div>
                </motion.div>
             </div>
           </div>

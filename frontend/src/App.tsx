@@ -26,7 +26,7 @@ function AppRoutes() {
         <div className="aurora-blob pointer-events-none text-pink-600/20 w-[40vw] h-[40vw] top-[30%] left-[40%]"></div>
 
         <Navbar />
-        <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 relative z-10 max-w-6xl">
+        <main className="container mx-auto px-4 sm:px-6 pt-28 pb-8 sm:pb-12 relative z-10 max-w-6xl">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/templates" element={<Templates />} />

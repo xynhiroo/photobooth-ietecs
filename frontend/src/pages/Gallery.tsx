@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../context/AuthContext';
-import { Share2, Download, Copy, Check, Sparkles, Image as ImageIcon, Trash2 } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Share2, Download, Copy, Check, Sparkles, Image as ImageIcon, Trash2, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { Variants } from 'framer-motion';
 
 interface Photo {
@@ -32,6 +32,7 @@ const Gallery = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
 
   useEffect(() => {
     const fetchPhotos = async () => {
@@ -149,12 +150,17 @@ const Gallery = () => {
       >
         {photos.map((photo) => (
           <motion.div variants={itemVariants} key={photo.id} className="glass-card overflow-hidden group relative">
-            <div className="aspect-[4/3] relative overflow-hidden bg-black">
-              <img 
-                src={photo.image_url} 
-                alt="Captured" 
-                className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:opacity-60"
-              />
+            <div className="relative aspect-[3/4] overflow-hidden group">
+              <div 
+                className="w-full h-full cursor-pointer"
+                onClick={() => setSelectedPhoto(photo)}
+              >
+                <img 
+                  src={photo.image_url} 
+                  alt={`Capture ${photo.id}`} 
+                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:opacity-60"
+                />
+              </div>
               
               {/* Action Overlays */}
               <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
@@ -205,6 +211,37 @@ const Gallery = () => {
           </motion.div>
         ))}
       </motion.div>
+      
+      {/* Lightbox Modal */}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedPhoto(null)}
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
+          >
+            <button 
+              onClick={() => setSelectedPhoto(null)}
+              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            
+            <motion.img 
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              src={selectedPhoto.image_url} 
+              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+              alt="Fullscreen Capture"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 };

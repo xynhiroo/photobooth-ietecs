@@ -3,54 +3,7 @@ import type { Variants } from 'framer-motion';
 import { Sparkles, Camera, Users, Layout } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const templates = [
-  {
-    id: 1,
-    name: "1975 - About you",
-    uses: "110,222",
-    photos: 4,
-    isFree: true,
-    isAdFree: true,
-    // CSS layout representation
-    bgClass: "bg-slate-300",
-    layout: "flex flex-col gap-3 p-4",
-    slots: [1, 2, 3, 4]
-  },
-  {
-    id: 2,
-    name: "1975 - About you Grid",
-    uses: "66,554",
-    photos: 6,
-    isFree: true,
-    isAdFree: true,
-    bgClass: "bg-slate-400",
-    layout: "grid grid-cols-2 gap-3 p-4",
-    slots: [1, 2, 3, 4, 5, 6]
-  },
-  {
-    id: 3,
-    name: "baddie",
-    uses: "12,779",
-    photos: 3,
-    isFree: true,
-    isAdFree: true,
-    // Leopard print pattern simulation using radial gradient
-    bgClass: "bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-amber-600 via-orange-900 to-black",
-    layout: "flex flex-col gap-6 p-6",
-    slots: [1, 2, 3]
-  },
-  {
-    id: 4,
-    name: "bis furap furab 💜",
-    uses: "1,926",
-    photos: 2,
-    isFree: true,
-    isAdFree: true,
-    bgClass: "bg-gradient-to-br from-purple-500 via-pink-500 to-cyan-500",
-    layout: "flex flex-col gap-8 p-6",
-    slots: [1, 2]
-  }
-];
+import { TEMPLATES } from '../components/TemplateRenderer';
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -105,7 +58,7 @@ const Templates = () => {
         animate="visible"
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
       >
-        {templates.map((template) => (
+        {Object.values(TEMPLATES).map((template) => (
           <motion.div 
             variants={itemVariants}
             key={template.id} 
@@ -169,7 +122,7 @@ const Templates = () => {
                 </h3>
                 <div className="flex items-center gap-1.5 text-slate-500 text-sm font-medium">
                   <Camera className="w-4 h-4" />
-                  {template.photos} photos
+                  {template.photosRequired} photos
                 </div>
               </div>
             </div>

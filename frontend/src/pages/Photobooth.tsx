@@ -13,6 +13,8 @@ const Photobooth = () => {
   const [selectedTemplateId, setSelectedTemplateId] = useState(initialTemplateId);
   const currentTemplate = TEMPLATES[selectedTemplateId] || TEMPLATES[1];
 
+  const [mode, setMode] = useState<'single' | 'template'>('template');
+
   const [filters, setFilters] = useState({
     brightness: 100,
     contrast: 100,
@@ -21,7 +23,7 @@ const Photobooth = () => {
   });
   
   const [countdown, setCountdown] = useState(3);
-  const burstCount = currentTemplate.photosRequired;
+  const requiredPhotos = mode === 'single' ? 1 : currentTemplate.photosRequired;
   
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,10 +32,16 @@ const Photobooth = () => {
   const templateRef = useRef<HTMLDivElement>(null);
 
   const handleCapture = (image: string) => {
-    setCapturedPhotos(prev => [...prev, image]);
+    setCapturedPhotos(prev => {
+      const newPhotos = [...prev, image];
+      return newPhotos;
+    });
   };
 
   const generateFinalImage = async (): Promise<string | null> => {
+    if (mode === 'single') {
+      return capturedPhotos[0] || null;
+    }
     if (!templateRef.current) return null;
     try {
       // Small delay to ensure images are fully rendered in the DOM before capturing
@@ -46,8 +54,8 @@ const Photobooth = () => {
   };
 
   const savePhotos = async () => {
-    if (capturedPhotos.length < burstCount) {
-      alert(`Please capture all ${burstCount} photos first.`);
+    if (capturedPhotos.length < requiredPhotos) {
+      alert(`Please capture all ${requiredPhotos} photos first.`);
       return;
     }
     
@@ -60,7 +68,7 @@ const Photobooth = () => {
       await api.post('/photos/upload', {
         image: compositeImage,
         filters: [
-          `Template:${currentTemplate.name}`,
+          mode === 'single' ? 'Mode:Single' : `Template:${currentTemplate.name}`,
           `brightness:${filters.brightness}`,
           `contrast:${filters.contrast}`,
           `sepia:${filters.sepia}`,
@@ -80,8 +88,8 @@ const Photobooth = () => {
   };
 
   const downloadLocal = async () => {
-    if (capturedPhotos.length < burstCount) {
-      alert(`Please capture all ${burstCount} photos first.`);
+    if (capturedPhotos.length < requiredPhotos) {
+      alert(`Please capture all ${requiredPhotos} photos first.`);
       return;
     }
     
@@ -92,7 +100,8 @@ const Photobooth = () => {
     if (compositeImage) {
       const link = document.createElement('a');
       link.href = compositeImage;
-      link.download = `ietecs-${currentTemplate.name.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.jpg`;
+      const fileName = mode === 'single' ? 'single' : currentTemplate.name.replace(/\s+/g, '-').toLowerCase();
+      link.download = `ietecs-${fileName}-${Date.now()}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -127,16 +136,26 @@ const Photobooth = () => {
         <div className="xl:col-span-3 space-y-8">
           <div className="relative">
             <div className="absolute -inset-1 rounded-[2.2rem] opacity-30 pointer-events-none" style={{ boxShadow: '0 0 40px 10px rgba(236, 72, 153, 0.5), 0 0 60px 20px rgba(139, 92, 246, 0.5)' }}></div>
-            <CameraFeed 
-              filters={filters} 
-              onCapture={handleCapture}
-              countdown={countdown}
-              burstCount={burstCount}
-            />
+            {capturedPhotos.length < requiredPhotos ? (
+              <>
+                <CameraFeed 
+                  filters={filters} 
+                  onCapture={handleCapture}
+                  countdown={countdown}
+                />
+                {mode === 'template' && (
+                  <div className="absolute top-4 right-4 bg-slate-900/80 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 shadow-xl z-20">
+                    <span className="text-white font-bold tracking-widest text-sm">
+                      {capturedPhotos.length} / {requiredPhotos} CAPTURED
+                    </span>
+                  </div>
+                )}
+              </>
+            ) : null}
           </div>
           
           <AnimatePresence>
-            {capturedPhotos.length > 0 && (
+            {capturedPhotos.length >= requiredPhotos && (
               <motion.div 
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: 'auto' }}
@@ -146,25 +165,25 @@ const Photobooth = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                   <h3 className="text-xl font-bold flex items-center gap-2 text-white">
                     <History className="w-5 h-5 text-brand-400" />
-                    Review & Compile ({capturedPhotos.length}/{burstCount})
+                    Review & Compile ({capturedPhotos.length}/{requiredPhotos})
                   </h3>
                   <div className="flex flex-wrap gap-3">
                     <button 
                       onClick={() => setCapturedPhotos([])}
                       className="px-4 py-2 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-colors flex items-center gap-2 font-medium"
                     >
-                      <X className="w-4 h-4" /> Discard
+                      <X className="w-4 h-4" /> Retake
                     </button>
                     <button 
                       onClick={downloadLocal}
-                      disabled={isProcessing || capturedPhotos.length < burstCount}
+                      disabled={isProcessing || capturedPhotos.length < requiredPhotos}
                       className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors flex items-center gap-2 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <Download className="w-4 h-4" /> Download
                     </button>
                     <button 
                       onClick={savePhotos}
-                      disabled={isProcessing || capturedPhotos.length < burstCount}
+                      disabled={isProcessing || capturedPhotos.length < requiredPhotos}
                       className="px-6 py-2 rounded-xl bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white transition-all hover:scale-105 shadow-lg shadow-brand-500/25 flex items-center gap-2 font-bold disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                     >
                       {isProcessing ? 'Processing...' : <><CheckCircle className="w-4 h-4" /> Save to Gallery</>}
@@ -183,14 +202,21 @@ const Photobooth = () => {
                 )}
                 
                 <div className="flex justify-center bg-slate-900/50 p-8 rounded-2xl overflow-x-auto">
-                  {/* Template rendering goes here. This gets converted to an image. */}
-                  <div className="scale-75 md:scale-100 transform origin-top">
-                    <TemplateRenderer 
-                      ref={templateRef} 
-                      templateId={selectedTemplateId} 
-                      images={capturedPhotos} 
+                  {mode === 'template' ? (
+                    <div className="scale-75 md:scale-100 transform origin-top">
+                      <TemplateRenderer 
+                        ref={templateRef} 
+                        templateId={selectedTemplateId} 
+                        images={capturedPhotos} 
+                      />
+                    </div>
+                  ) : (
+                    <img 
+                      src={capturedPhotos[0]} 
+                      className="max-h-[60vh] rounded-xl shadow-2xl border-4 border-white/10" 
+                      alt="Single Capture" 
                     />
-                  </div>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -202,29 +228,49 @@ const Photobooth = () => {
           <div className="glass-card p-6">
             <div className="flex items-center gap-2 mb-6 text-lg font-bold border-b border-white/10 pb-4">
               <Layout className="w-5 h-5 text-brand-400" />
-              Template
+              Capture Mode
             </div>
-            <div className="flex flex-col gap-3 mb-6">
-              {Object.values(TEMPLATES).map(template => (
-                <button
-                  key={template.id}
-                  onClick={() => {
-                    setSelectedTemplateId(template.id);
-                    setCapturedPhotos([]); // Reset captures when changing template
-                  }}
-                  className={`py-3 px-4 rounded-xl border text-sm font-bold transition-all text-left flex justify-between items-center ${
-                    selectedTemplateId === template.id 
-                      ? 'bg-brand-500 border-brand-400 text-white shadow-lg' 
-                      : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <span>{template.name}</span>
-                  <span className={`text-xs px-2 py-1 rounded-md ${selectedTemplateId === template.id ? 'bg-black/20' : 'bg-black/40'}`}>
-                    {template.photosRequired} frames
-                  </span>
-                </button>
-              ))}
+            <div className="flex bg-slate-900/50 p-1 rounded-xl mb-6">
+              <button
+                onClick={() => { setMode('single'); setCapturedPhotos([]); }}
+                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${mode === 'single' ? 'bg-brand-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+              >
+                Single Photo
+              </button>
+              <button
+                onClick={() => { setMode('template'); setCapturedPhotos([]); }}
+                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${mode === 'template' ? 'bg-brand-500 text-white shadow-lg' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+              >
+                Templates
+              </button>
             </div>
+
+            {mode === 'template' && (
+              <>
+                <div className="text-sm font-bold text-slate-400 mb-3 uppercase tracking-wider">Select Frame</div>
+                <div className="flex flex-col gap-3 mb-6">
+                  {Object.values(TEMPLATES).map(template => (
+                    <button
+                      key={template.id}
+                      onClick={() => {
+                        setSelectedTemplateId(template.id);
+                        setCapturedPhotos([]); // Reset captures when changing template
+                      }}
+                      className={`py-3 px-4 rounded-xl border text-sm font-bold transition-all text-left flex justify-between items-center ${
+                        selectedTemplateId === template.id 
+                          ? 'bg-brand-500 border-brand-400 text-white shadow-lg' 
+                          : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10 hover:text-white'
+                      }`}
+                    >
+                      <span>{template.name}</span>
+                      <span className={`text-xs px-2 py-1 rounded-md ${selectedTemplateId === template.id ? 'bg-black/20' : 'bg-black/40'}`}>
+                        {template.photosRequired} frames
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
 
             <div className="flex items-center gap-2 mb-6 text-lg font-bold border-b border-white/10 pb-4 mt-8">
               <Sparkles className="w-5 h-5 text-brand-400" />
@@ -320,10 +366,13 @@ const Photobooth = () => {
                   ))}
                 </div>
               </div>
-              <div className="bg-brand-500/10 border border-brand-500/20 p-4 rounded-xl text-sm text-brand-200">
-                <p className="font-bold mb-1">Burst Mode Active</p>
-                <p className="opacity-80">The camera will automatically take {burstCount} consecutive photos for the selected template.</p>
-              </div>
+              
+              {mode === 'template' && (
+                <div className="bg-brand-500/10 border border-brand-500/20 p-4 rounded-xl text-sm text-brand-200">
+                  <p className="font-bold mb-1">Manual Frame Mode Active</p>
+                  <p className="opacity-80">Take {requiredPhotos} photos manually. You have time to change poses between each shot!</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

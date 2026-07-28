@@ -4,12 +4,48 @@ export interface TemplateData {
   id: number;
   name: string;
   photosRequired: number;
+  uses: string;
+  isFree: boolean;
+  isAdFree: boolean;
+  bgClass: string;
+  layout: string;
+  slots: number[];
 }
 
 export const TEMPLATES: Record<number, TemplateData> = {
-  1: { id: 1, name: "Vintage Strip (4)", photosRequired: 4 },
-  2: { id: 2, name: "Checkered Red (3)", photosRequired: 3 },
-  3: { id: 3, name: "Grid Style (4)", photosRequired: 4 },
+  1: { 
+    id: 1, 
+    name: "Vintage Strip", 
+    photosRequired: 4,
+    uses: "110,222",
+    isFree: true,
+    isAdFree: true,
+    bgClass: "bg-[#1a233a]",
+    layout: "flex flex-col gap-3 p-4",
+    slots: [1, 2, 3, 4]
+  },
+  2: { 
+    id: 2, 
+    name: "Checkered Red", 
+    photosRequired: 3,
+    uses: "66,554",
+    isFree: true,
+    isAdFree: true,
+    bgClass: "bg-[#d8b4b4]",
+    layout: "flex flex-col gap-6 p-6",
+    slots: [1, 2, 3]
+  },
+  3: { 
+    id: 3, 
+    name: "Grid Style", 
+    photosRequired: 4,
+    uses: "12,779",
+    isFree: true,
+    isAdFree: true,
+    bgClass: "bg-slate-900",
+    layout: "grid grid-cols-2 gap-4 p-4",
+    slots: [1, 2, 3, 4]
+  },
 };
 
 interface TemplateRendererProps {
