@@ -9,6 +9,8 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/shared/{token}', [PhotoController::class, 'getSharedPhoto']);
+Route::post('/photos/print-queue', [PhotoController::class, 'queuePrint']);
+Route::post('/photos/reprint-last', [PhotoController::class, 'reprintLast']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
