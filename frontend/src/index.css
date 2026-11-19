@@ -47,7 +47,7 @@
   }
 
   .aurora-bg {
-    @apply fixed inset-0 -z-10 bg-[linear-gradient(to_bottom_right,#0f172a,#1e1b4b,#312e81)];
+    @apply fixed inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,#2e1065,#0d0b24,#050510)];
   }
 
   .aurora-blob {
