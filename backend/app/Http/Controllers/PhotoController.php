@@ -10,7 +10,7 @@ class PhotoController extends Controller
 {
     public function index(Request $request)
     {
-        $photos = $request->user()->photos()->orderBy('created_at', 'desc')->get();
+        $photos = Photo::orderBy('created_at', 'desc')->get();
         return response()->json($photos);
     }
 
@@ -49,8 +49,10 @@ class PhotoController extends Controller
 
         $shareToken = Str::random(32);
 
+        $userId = $request->user() ? $request->user()->id : 1;
+
         $photo = Photo::create([
-            'user_id' => $request->user()->id,
+            'user_id' => $userId,
             'image_url' => asset('storage/' . $filePath),
             'public_id' => $fileName,
             'filters_used' => $request->input('filters', []),
@@ -67,7 +69,7 @@ class PhotoController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        $photo = $request->user()->photos()->findOrFail($id);
+        $photo = Photo::findOrFail($id);
         
         // Extract file path from url
         $filePath = str_replace(asset('storage/'), '', $photo->image_url);
@@ -83,7 +85,7 @@ class PhotoController extends Controller
 
     public function generateShareLink(Request $request, $id)
     {
-        $photo = $request->user()->photos()->findOrFail($id);
+        $photo = Photo::findOrFail($id);
         
         if (!$photo->share_token) {
             $photo->share_token = Str::random(32);
@@ -99,10 +101,11 @@ class PhotoController extends Controller
     public function getSharedPhoto($token)
     {
         $photo = Photo::where('share_token', $token)->firstOrFail();
+        $user = $photo->user ? $photo->user()->select('name')->first() : (object)['name' => 'HMTI Fair Booth'];
         
         return response()->json([
             'photo' => $photo,
-            'user' => $photo->user()->select('name')->first()
+            'user' => $user
         ]);
     }
 

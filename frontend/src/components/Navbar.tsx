@@ -1,12 +1,9 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { LogOut, Menu, X, User } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Camera } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,26 +16,22 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-    setMobileMenuOpen(false);
-  };
-
   const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Templates', path: '/templates' },
+    { name: 'Beranda', path: '/' },
+    { name: 'Pilihan Frame', path: '/templates' },
+    { name: 'Galeri Foto', path: '/gallery' },
   ];
 
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-slate-900/70 backdrop-blur-xl border-b border-white/10 shadow-lg' : 'bg-transparent'
+        isScrolled ? 'bg-slate-950/85 backdrop-blur-xl border-b border-amber-400/30 shadow-2xl' : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 h-20 flex items-center justify-between max-w-6xl">
+        {/* Brand */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-700 via-indigo-600 to-amber-500 p-0.5 shadow-lg shadow-purple-500/30 border border-amber-300/40 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-800 via-indigo-600 to-amber-500 p-0.5 shadow-lg shadow-purple-500/30 border border-amber-300/40 flex items-center justify-center">
             <img 
               src="/hmti_assets/5. LOGO HMTI, POLIBATAM, FAIR/Salinan HMTI.png" 
               alt="HMTI Logo" 
@@ -46,11 +39,14 @@ const Navbar = () => {
             />
           </div>
           <div>
-            <span className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400 font-serif">
-              HMTI FAIR
-            </span>
-            <span className="block text-[9px] font-bold text-amber-300 tracking-widest uppercase">
-              Photobooth 2026
+            <div className="flex items-center gap-1.5">
+              <span className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400 font-serif">
+                HMTI FAIR
+              </span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-amber-400/20 text-amber-300 font-bold">2026</span>
+            </div>
+            <span className="block text-[8px] font-bold text-amber-300/90 tracking-widest uppercase">
+              Official Photobooth Kiosk
             </span>
           </div>
         </Link>
@@ -61,64 +57,21 @@ const Navbar = () => {
             <Link 
               key={link.name} 
               to={link.path} 
-              className={`text-sm font-medium transition-colors hover:text-white ${
-                location.pathname === link.path ? 'text-white' : 'text-slate-400'
+              className={`text-sm font-semibold transition-colors hover:text-amber-300 ${
+                location.pathname === link.path ? 'text-amber-300 border-b-2 border-amber-400 pb-1' : 'text-slate-300'
               }`}
             >
               {link.name}
             </Link>
           ))}
           
-          <div className="flex items-center gap-4 border-l border-white/10 pl-8">
-            {user ? (
-              <>
-                <Link 
-                  to="/booth" 
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-                >
-                  Enter Booth
-                </Link>
-                <Link 
-                  to="/gallery" 
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-                >
-                  Gallery
-                </Link>
-                <div className="relative group cursor-pointer ml-2">
-                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-full hover:bg-white/10 transition-colors">
-                    <User className="w-4 h-4 text-brand-400" />
-                    <span className="text-sm font-medium text-white">{user.name.split(' ')[0]}</span>
-                  </div>
-                  <div className="absolute right-0 top-full mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100">
-                    <div className="glass-card p-2 flex flex-col gap-1">
-                      <button 
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:text-red-300 hover:bg-red-400/10 rounded-lg transition-colors text-left"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Log out
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <Link 
-                  to="/login" 
-                  className="text-sm font-medium text-slate-300 hover:text-white transition-colors"
-                >
-                  Sign in
-                </Link>
-                <Link 
-                  to="/register" 
-                  className="text-sm font-medium bg-brand-600 hover:bg-brand-500 text-white px-5 py-2.5 rounded-full shadow-lg shadow-brand-500/25 transition-all hover:-translate-y-0.5"
-                >
-                  Get Started
-                </Link>
-              </>
-            )}
-          </div>
+          <Link 
+            to="/booth" 
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-700 via-indigo-600 to-amber-500 hover:from-purple-600 hover:to-amber-400 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-purple-500/25 transition-all hover:scale-105 border border-amber-300/40 cursor-pointer"
+          >
+            <Camera className="w-4 h-4 text-amber-300" />
+            <span>Mulai Foto</span>
+          </Link>
         </nav>
 
         {/* Mobile Toggle */}
@@ -137,73 +90,29 @@ const Navbar = () => {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-0 right-0 glass border-b border-white/10"
+            className="md:hidden absolute top-full left-0 right-0 bg-slate-950/95 backdrop-blur-2xl border-b border-amber-400/30"
           >
-            <div className="flex flex-col px-4 py-6 gap-4">
+            <div className="flex flex-col px-6 py-6 gap-4">
               {navLinks.map((link) => (
                 <Link 
                   key={link.name} 
-                  to={link.path} 
-                  className="text-lg font-medium text-slate-300 hover:text-white"
+                  to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
+                  className={`text-sm font-bold ${
+                    location.pathname === link.path ? 'text-amber-300' : 'text-slate-300'
+                  }`}
                 >
                   {link.name}
                 </Link>
               ))}
-              
-              <div className="h-px bg-white/10 my-2" />
-              
-              {user ? (
-                <>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-10 h-10 rounded-full bg-brand-500/20 flex items-center justify-center">
-                      <User className="w-5 h-5 text-brand-400" />
-                    </div>
-                    <div>
-                      <div className="font-medium text-white">{user.name}</div>
-                      <div className="text-xs text-slate-400">{user.email}</div>
-                    </div>
-                  </div>
-                  <Link 
-                    to="/booth" 
-                    className="block text-lg font-medium text-slate-300 hover:text-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Enter Booth
-                  </Link>
-                  <Link 
-                    to="/gallery" 
-                    className="block text-lg font-medium text-slate-300 hover:text-white"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    My Gallery
-                  </Link>
-                  <button 
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 text-lg font-medium text-red-400 hover:text-red-300 mt-2"
-                  >
-                    <LogOut className="w-5 h-5" />
-                    Log out
-                  </button>
-                </>
-              ) : (
-                <div className="flex flex-col gap-3 mt-2">
-                  <Link 
-                    to="/login" 
-                    className="w-full text-center py-3 rounded-xl border border-white/10 font-medium text-white hover:bg-white/5"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Sign in
-                  </Link>
-                  <Link 
-                    to="/register" 
-                    className="w-full text-center py-3 rounded-xl bg-brand-600 font-medium text-white shadow-lg shadow-brand-500/25"
-                    onClick={() => setMobileMenuOpen(false)}
-                  >
-                    Get Started
-                  </Link>
-                </div>
-              )}
+              <Link 
+                to="/booth"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-700 to-amber-500 text-white py-3 rounded-xl text-sm font-black shadow-lg border border-amber-300/40"
+              >
+                <Camera className="w-4 h-4 text-amber-300" />
+                Masuk ke Studio Photobooth
+              </Link>
             </div>
           </motion.div>
         )}
