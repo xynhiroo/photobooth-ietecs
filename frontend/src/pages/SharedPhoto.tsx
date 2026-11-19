@@ -57,43 +57,61 @@ const SharedPhoto = () => {
     );
   }
 
+  const handleDownload = async () => {
+    if (!data?.photo.image_url) return;
+    try {
+      const response = await fetch(data.photo.image_url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `hmti-fair-photo-${data.photo.id}.jpg`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch {
+      // Fallback
+      window.open(data.photo.image_url, '_blank');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 font-sans selection:bg-blue-500/30 flex flex-col items-center p-4 sm:p-8">
-      <Link to="/" className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-8">
-        <Camera className="w-6 h-6 text-blue-400" />
-        PhotoMagic
+    <div className="min-h-screen bg-slate-900 text-slate-50 font-sans selection:bg-brand-500/30 flex flex-col items-center p-4 sm:p-8">
+      <Link to="/" className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent mb-8">
+        <Camera className="w-6 h-6 text-pink-400" />
+        HMTI Fair Photobooth
       </Link>
       
-      <div className="glass p-4 sm:p-6 rounded-2xl w-full max-w-4xl mx-auto shadow-2xl animate-fade-in">
-        <div className="mb-6 flex justify-between items-center">
+      <div className="glass-card bg-slate-900/90 border border-white/10 p-4 sm:p-6 rounded-2xl w-full max-w-4xl mx-auto shadow-2xl">
+        <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Captured by {data.user.name}</h2>
-            <p className="text-sm text-slate-400">{new Date(data.photo.created_at).toLocaleDateString()}</p>
+            <span className="inline-block px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+              ✨ Foto Booth Resmi
+            </span>
+            <h2 className="text-xl sm:text-2xl font-bold text-white">Diambil oleh {data.user.name}</h2>
+            <p className="text-sm text-slate-400">{new Date(data.photo.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
           </div>
-          <a 
-            href={data.photo.image_url}
-            download={`photomagic-shared-${data.photo.id}.jpg`}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+          <button 
+            onClick={handleDownload}
+            className="flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-brand-500/25 cursor-pointer"
           >
             <Download className="w-4 h-4" />
-            <span className="hidden sm:inline">Download High-Res</span>
-          </a>
+            <span>Unduh Resolusi Penuh</span>
+          </button>
         </div>
         
-        <div className="rounded-xl overflow-hidden bg-black border border-slate-700/50 flex justify-center">
+        <div className="rounded-xl overflow-hidden bg-black/60 border border-slate-700/50 flex justify-center p-4">
           <img 
             src={data.photo.image_url} 
-            alt="Shared capture" 
-            className="max-h-[70vh] object-contain"
+            alt="HMTI Fair Photobooth Capture" 
+            className="max-h-[75vh] object-contain rounded-lg shadow-2xl"
           />
         </div>
       </div>
       
-      <div className="mt-12 text-center text-slate-400">
-        <p>Want to create your own magic moments?</p>
-        <Link to="/" className="text-blue-400 hover:text-blue-300 font-medium mt-2 inline-block">
-          Try PhotoMagic for free
-        </Link>
+      <div className="mt-8 text-center text-slate-400 text-sm">
+        <p>Terima kasih telah berkunjung ke booth HMTI Fair!</p>
       </div>
     </div>
   );

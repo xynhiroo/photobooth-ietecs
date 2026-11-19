@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Aperture, LogOut, Menu, X, User } from 'lucide-react';
+import { LogOut, Menu, X, User } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -37,17 +37,22 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 h-20 flex items-center justify-between max-w-6xl">
-        <Link to="/" className="flex items-center gap-2 group">
-          <motion.div 
-            whileHover={{ rotate: 180 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-pink-500 flex items-center justify-center shadow-lg shadow-brand-500/30"
-          >
-            <Aperture className="w-6 h-6 text-white" />
-          </motion.div>
-          <span className="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 group-hover:to-brand-400 transition-colors">
-            ietecs
-          </span>
+        <Link to="/" className="flex items-center gap-3 group">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-700 via-indigo-600 to-amber-500 p-0.5 shadow-lg shadow-purple-500/30 border border-amber-300/40 flex items-center justify-center">
+            <img 
+              src="/hmti_assets/5. LOGO HMTI, POLIBATAM, FAIR/Salinan HMTI.png" 
+              alt="HMTI Logo" 
+              className="w-7 h-7 object-contain" 
+            />
+          </div>
+          <div>
+            <span className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400 font-serif">
+              HMTI FAIR
+            </span>
+            <span className="block text-[9px] font-bold text-amber-300 tracking-widest uppercase">
+              Photobooth 2026
+            </span>
+          </div>
         </Link>
 
         {/* Desktop Nav */}

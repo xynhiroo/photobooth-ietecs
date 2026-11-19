@@ -4,4 +4,6 @@ frontend/node_modules/
 backend/.env
 frontend/.env
 *.log
+*.ai
+*.part
 .DS_Store
