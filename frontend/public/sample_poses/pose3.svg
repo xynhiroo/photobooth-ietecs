@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#14532d" />
+      <stop offset="100%" stop-color="#1e1b4b" />
+    </linearGradient>
+    <radialGradient id="glow3" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="600" height="450" fill="url(#bg3)" />
+  <circle cx="300" cy="180" r="160" fill="url(#glow3)" />
+  <!-- Silhouette figure with cool pose -->
+  <circle cx="300" cy="170" r="65" fill="#f8fafc" opacity="0.9" />
+  <!-- Sunglasses -->
+  <rect x="260" y="155" width="35" height="22" rx="4" fill="#0f172a" />
+  <rect x="305" y="155" width="35" height="22" rx="4" fill="#0f172a" />
+  <line x1="295" y1="165" x2="305" y2="165" stroke="#0f172a" stroke-width="4" />
+  <path d="M 285 195 Q 300 205 315 195" stroke="#0f172a" stroke-width="4" stroke-linecap="round" fill="none" />
+  <!-- Body -->
+  <path d="M 180 380 C 190 270, 230 250, 260 240 L 340 240 C 370 250, 410 270, 420 380 Z" fill="#047857" />
+  <!-- Pose Badge -->
+  <rect x="20" y="20" width="130" height="32" rx="16" fill="rgba(15,23,42,0.7)" stroke="rgba(212,168,83,0.4)" />
+  <text x="85" y="41" fill="#fef08a" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Pose 3: Cool 😎</text>
+</svg>

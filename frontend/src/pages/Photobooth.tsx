@@ -23,7 +23,7 @@ import {
   Trash2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { TemplateRenderer, TEMPLATES } from '../components/TemplateRenderer';
+import { TemplateRenderer, TEMPLATES, SAMPLE_PREVIEW_IMAGES } from '../components/TemplateRenderer';
 import type { PlacedStamp } from '../components/TemplateRenderer';
 import * as htmlToImage from 'html-to-image';
 import { QRCodeSVG } from 'qrcode.react';
@@ -520,21 +520,28 @@ const Photobooth = () => {
                     setSavedShareData(null);
                     setPlacedStamps([]);
                   }}
-                  className={`btn-tactile p-3 rounded-xl border text-left transition-colors cursor-pointer ${
+                  className={`btn-tactile p-2.5 rounded-xl border text-left transition-colors cursor-pointer flex items-center gap-3 ${
                     selectedTemplateId === tmpl.id
                       ? 'bg-amber-400/15 border-amber-400 text-white shadow-sm'
                       : 'bg-slate-900/60 border-white/10 text-slate-300 hover:bg-slate-900 hover:text-white'
                   }`}
                 >
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-xs font-bold font-serif">{tmpl.name}</span>
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-800 text-amber-300 font-semibold">
-                      {tmpl.photosRequired} Pose
-                    </span>
+                  <div className="w-10 h-14 rounded-lg bg-black border border-white/20 shrink-0 overflow-hidden flex items-center justify-center">
+                    <div className="transform scale-[0.15] origin-center pointer-events-none select-none">
+                      <TemplateRenderer templateId={tmpl.id} images={SAMPLE_PREVIEW_IMAGES} />
+                    </div>
                   </div>
-                  <p className="text-[11px] text-slate-400 font-normal leading-relaxed">
-                    {tmpl.description}
-                  </p>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex justify-between items-center mb-0.5">
+                      <span className="text-xs font-bold font-serif truncate">{tmpl.name}</span>
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-amber-300 font-semibold shrink-0">
+                        {tmpl.photosRequired} Pose
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 truncate">
+                      {tmpl.category} • {tmpl.printFormat}
+                    </p>
+                  </div>
                 </button>
               ))}
             </div>

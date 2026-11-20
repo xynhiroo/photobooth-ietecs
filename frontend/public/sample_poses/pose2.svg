@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 450" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#311042" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <radialGradient id="glow2" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#ec4899" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ec4899" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <rect width="600" height="450" fill="url(#bg2)" />
+  <circle cx="300" cy="180" r="160" fill="url(#glow2)" />
+  <!-- Silhouette figure with peace sign -->
+  <circle cx="300" cy="170" r="65" fill="#f8fafc" opacity="0.9" />
+  <path d="M 235 150 C 235 80, 365 80, 365 150 C 350 110, 250 110, 235 150 Z" fill="#1e1b4b" />
+  <circle cx="280" cy="165" r="5" fill="#0f172a" />
+  <circle cx="320" cy="165" r="5" fill="#0f172a" />
+  <path d="M 288 192 Q 300 206 312 192" stroke="#0f172a" stroke-width="4" stroke-linecap="round" fill="none" />
+  <circle cx="270" cy="178" r="8" fill="#f43f5e" opacity="0.5" />
+  <circle cx="330" cy="178" r="8" fill="#f43f5e" opacity="0.5" />
+  <!-- Body -->
+  <path d="M 180 380 C 190 270, 230 250, 260 240 L 340 240 C 370 250, 410 270, 420 380 Z" fill="#4338ca" />
+  <!-- Peace Hand Sign ✌️ -->
+  <path d="M 380 230 L 400 170 L 415 190 L 430 160 L 440 230 Z" fill="#f8fafc" stroke="#d4a853" stroke-width="3" />
+  <!-- Pose Badge -->
+  <rect x="20" y="20" width="130" height="32" rx="16" fill="rgba(15,23,42,0.7)" stroke="rgba(212,168,83,0.4)" />
+  <text x="85" y="41" fill="#fef08a" font-family="sans-serif" font-size="13" font-weight="bold" text-anchor="middle">Pose 2: Peace ✌️</text>
+</svg>
