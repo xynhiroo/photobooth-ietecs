@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { api } from '../context/AuthContext';
-import { Camera, Download, AlertCircle } from 'lucide-react';
+import { Camera, Download, AlertCircle, Share2, Sparkles } from 'lucide-react';
 
 interface SharedPhotoData {
   photo: {
@@ -39,18 +39,23 @@ const SharedPhoto = () => {
   }, [token]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-slate-900"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div></div>;
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+        <p className="text-slate-400 text-xs font-medium">Mengambil foto dari stan booth...</p>
+      </div>
+    );
   }
 
   if (error || !data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-900 text-white">
-        <div className="glass p-12 rounded-2xl text-center max-w-md">
-          <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Photo Not Found</h2>
-          <p className="text-slate-400 mb-8">This link may be invalid or the photo has been removed.</p>
-          <Link to="/" className="bg-blue-600 hover:bg-blue-500 px-6 py-2 rounded-lg font-medium transition-colors">
-            Go Home
+      <div className="min-h-[60vh] flex items-center justify-center text-white">
+        <div className="surface-card p-10 rounded-3xl text-center max-w-md border border-white/10">
+          <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
+          <h2 className="text-xl font-bold mb-1 font-serif">Foto Tidak Ditemukan</h2>
+          <p className="text-slate-400 text-xs mb-6">Tautan ini mungkin sudah kadaluarsa atau foto telah dihapus.</p>
+          <Link to="/" className="btn-tactile inline-flex items-center gap-2 bg-amber-400 text-slate-950 px-5 py-2.5 rounded-full text-xs font-bold">
+            Kembali ke Beranda
           </Link>
         </div>
       </div>
@@ -71,48 +76,97 @@ const SharedPhoto = () => {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
     } catch {
-      // Fallback
       window.open(data.photo.image_url, '_blank');
     }
   };
 
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Foto Resmi HMTI Fair 2026',
+          text: 'Lihat hasil fotoku di photobooth HMTI Fair 2026 Pollux Mall Batam!',
+          url: window.location.href,
+        });
+      } catch {}
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert('Tautan foto berhasil disalin!');
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 font-sans selection:bg-brand-500/30 flex flex-col items-center p-4 sm:p-8">
-      <Link to="/" className="flex items-center gap-2 text-xl font-bold bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent mb-8">
-        <Camera className="w-6 h-6 text-pink-400" />
-        HMTI Fair Photobooth
-      </Link>
+    <div className="max-w-4xl mx-auto pb-12">
       
-      <div className="glass-card bg-slate-900/90 border border-white/10 p-4 sm:p-6 rounded-2xl w-full max-w-4xl mx-auto shadow-2xl">
-        <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      {/* Brand Header */}
+      <div className="flex items-center justify-between gap-4 mb-6 pb-4 border-b border-white/[0.08]">
+        <Link to="/" className="flex items-center gap-2 text-white font-serif font-bold text-lg">
+          <img 
+            src="/hmti_assets/5. LOGO HMTI, POLIBATAM, FAIR/Salinan HMTI.png" 
+            alt="HMTI Logo" 
+            className="w-5 h-5 object-contain" 
+          />
+          <span>HMTI Fair 2026 Photobooth</span>
+        </Link>
+        <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-semibold border border-amber-400/30">
+          Soft-Copy Digital
+        </span>
+      </div>
+      
+      {/* Photo Showcase Card */}
+      <div className="surface-card p-6 sm:p-8 rounded-3xl border border-white/10 shadow-2xl space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <span className="inline-block px-2.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 text-[11px] font-bold uppercase tracking-wider mb-1">
-              ✨ Foto Booth Resmi
-            </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Diambil oleh {data.user.name}</h2>
-            <p className="text-sm text-slate-400">{new Date(data.photo.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+            <div className="flex items-center gap-1.5 text-xs text-amber-300 font-semibold mb-1">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Diambil di Pollux Mall Batam Center</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white font-serif">
+              Hasil Cetak Photobooth
+            </h1>
+            <p className="text-xs text-slate-400 mt-0.5">
+              {new Date(data.photo.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+            </p>
           </div>
-          <button 
-            onClick={handleDownload}
-            className="flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white px-5 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-brand-500/25 cursor-pointer"
-          >
-            <Download className="w-4 h-4" />
-            <span>Unduh Resolusi Penuh</span>
-          </button>
+
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={handleShare}
+              className="btn-tactile px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white border border-white/10 text-xs font-semibold flex items-center gap-1.5"
+            >
+              <Share2 className="w-3.5 h-3.5 text-amber-400" />
+              <span>Bagikan</span>
+            </button>
+
+            <button 
+              type="button"
+              onClick={handleDownload}
+              className="btn-tactile px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-md"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Unduh Resolusi Penuh</span>
+            </button>
+          </div>
         </div>
         
-        <div className="rounded-xl overflow-hidden bg-black/60 border border-slate-700/50 flex justify-center p-4">
+        {/* Full Resolution Photo Viewer */}
+        <div className="rounded-2xl overflow-hidden bg-black/60 border border-white/10 flex justify-center p-4 sm:p-6">
           <img 
             src={data.photo.image_url} 
-            alt="HMTI Fair Photobooth Capture" 
-            className="max-h-[75vh] object-contain rounded-lg shadow-2xl"
+            alt="Hasil Foto HMTI Fair" 
+            className="max-h-[75vh] object-contain rounded-xl shadow-2xl"
           />
         </div>
+
+        <div className="text-center text-xs text-slate-400 pt-2 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-2">
+          <span>Terima kasih telah berkunjung ke stan HMTI Fair 2026!</span>
+          <Link to="/booth" className="text-amber-400 hover:underline font-semibold flex items-center gap-1">
+            <Camera className="w-3.5 h-3.5" /> Ambil Foto Lagi
+          </Link>
+        </div>
       </div>
-      
-      <div className="mt-8 text-center text-slate-400 text-sm">
-        <p>Terima kasih telah berkunjung ke booth HMTI Fair!</p>
-      </div>
+
     </div>
   );
 };

@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../context/AuthContext';
-import { Share2, Download, Copy, Check, Sparkles, Image as ImageIcon, Trash2, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import type { Variants } from 'framer-motion';
+import { Share2, Download, Copy, Check, Image as ImageIcon, Trash2, X, Camera } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 
 interface Photo {
   id: string;
@@ -12,21 +11,6 @@ interface Photo {
   share_token: string | null;
   created_at: string;
 }
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
-};
 
 const Gallery = () => {
   const [photos, setPhotos] = useState<Photo[]>([]);
@@ -60,7 +44,7 @@ const Gallery = () => {
       setTimeout(() => setCopiedLink(null), 3000);
     } catch (error) {
       console.error('Failed to generate share link', error);
-      alert('Failed to generate share link');
+      alert('Gagal membuat tautan bagikan.');
     }
   };
 
@@ -71,174 +55,164 @@ const Gallery = () => {
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `ietecs-capture-${photo.id}.jpg`;
+      link.download = `hmti-fair-photo-${photo.id}.jpg`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Failed to download photo', error);
-      alert('Failed to download photo. Please try again.');
+      alert('Gagal mengunduh foto.');
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this photo?')) return;
+    if (!window.confirm('Hapus foto ini dari galeri booth?')) return;
     try {
       await api.delete(`/photos/${id}`);
       setPhotos(photos.filter(p => p.id !== id));
     } catch (error) {
       console.error('Failed to delete photo', error);
-      alert('Failed to delete photo');
+      alert('Gagal menghapus foto.');
     }
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center h-[60vh] gap-4">
-        <div className="w-16 h-16 relative">
-          <div className="absolute inset-0 rounded-full border-t-2 border-brand-500 animate-spin"></div>
-          <div className="absolute inset-2 rounded-full border-r-2 border-pink-500 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}></div>
-        </div>
-        <p className="text-slate-400 animate-pulse font-medium">Loading magic...</p>
+      <div className="flex flex-col justify-center items-center h-[50vh] gap-3">
+        <div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+        <p className="text-slate-400 text-xs font-medium">Memuat arsip foto...</p>
       </div>
     );
   }
 
   if (photos.length === 0) {
     return (
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        className="glass-card p-12 rounded-[2rem] text-center max-w-2xl mx-auto mt-12 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-gradient-to-tr from-brand-600/10 to-pink-600/10 mix-blend-overlay"></div>
-        <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6">
-          <ImageIcon className="w-12 h-12 text-slate-400" />
+      <div className="surface-card p-12 rounded-3xl text-center max-w-xl mx-auto mt-8 border border-white/10">
+        <div className="w-16 h-16 bg-slate-900 border border-white/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-amber-400">
+          <ImageIcon className="w-8 h-8" />
         </div>
-        <h2 className="text-3xl font-black mb-4 text-white">Your Gallery is Empty</h2>
-        <p className="text-slate-400 mb-8 text-lg">Head over to the studio to capture your first aurora moment!</p>
-        <Link to="/booth" className="inline-flex items-center gap-2 bg-gradient-to-r from-brand-600 to-brand-500 hover:from-brand-500 hover:to-brand-400 text-white px-8 py-4 rounded-full font-bold shadow-lg shadow-brand-500/25 transition-transform hover:scale-105">
-          <Sparkles className="w-5 h-5" />
-          Enter Studio
+        <h2 className="text-2xl font-bold mb-2 text-white font-serif">Belum Ada Foto Tersimpan</h2>
+        <p className="text-slate-400 mb-6 text-sm">
+          Ayo mulai sesi foto pertamamu di studio photobooth HMTI Fair!
+        </p>
+        <Link 
+          to="/booth" 
+          className="btn-tactile inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-950 px-6 py-3 rounded-full text-xs font-bold shadow-md"
+        >
+          <Camera className="w-4 h-4 text-slate-950" />
+          <span>Buka Studio Booth</span>
         </Link>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="flex items-center gap-3 mb-10"
-      >
-        <div className="p-3 bg-pink-500/20 rounded-xl">
-          <ImageIcon className="w-6 h-6 text-pink-400" />
-        </div>
-        <div>
-          <h2 className="text-3xl font-black text-white">Your Magic Moments</h2>
-          <p className="text-slate-400">Manage and share your captures</p>
-        </div>
-      </motion.div>
+    <div className="max-w-6xl mx-auto pb-16">
       
-      <motion.div 
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-      >
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 pb-4 border-b border-white/[0.08]">
+        <div>
+          <span className="text-[11px] font-semibold text-amber-300 uppercase tracking-wider">
+            Arsip Booth Resmi
+          </span>
+          <h1 className="text-2xl sm:text-4xl font-bold text-white font-serif mt-0.5">
+            Galeri Hasil Foto
+          </h1>
+        </div>
+        <div className="text-xs text-slate-400 font-medium">
+          Total Foto: <strong className="text-white">{photos.length} Lembar</strong>
+        </div>
+      </div>
+      
+      {/* Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
         {photos.map((photo) => (
-          <motion.div variants={itemVariants} key={photo.id} className="glass-card overflow-hidden group relative">
-            <div className="relative aspect-[3/4] overflow-hidden group">
-              <div 
-                className="w-full h-full cursor-pointer"
+          <div key={photo.id} className="surface-card rounded-2xl overflow-hidden border border-white/10 group flex flex-col justify-between">
+            <div className="relative aspect-[3/4] overflow-hidden bg-black/40">
+              <img 
+                src={photo.image_url} 
+                alt={`Capture ${photo.id}`} 
+                loading="lazy"
                 onClick={() => setSelectedPhoto(photo)}
-              >
-                <img 
-                  src={photo.image_url} 
-                  alt={`Capture ${photo.id}`} 
-                  className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:opacity-60"
-                />
-              </div>
+                className="w-full h-full object-cover cursor-pointer transition-transform duration-300 group-hover:scale-105"
+              />
               
-              {/* Action Overlays */}
-              <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
+              {/* Overlay actions */}
+              <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center gap-2">
                 <button 
+                  type="button"
                   onClick={() => handleShare(photo.id)}
-                  className="w-12 h-12 rounded-full bg-brand-500 hover:bg-brand-400 text-white flex items-center justify-center transition-all hover:scale-110 shadow-lg"
-                  title="Share Photo"
+                  className="btn-tactile w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center border border-white/20 hover:border-amber-400"
+                  title="Bagikan Tautan"
                 >
-                  <Share2 className="w-5 h-5" />
+                  <Share2 className="w-4 h-4 text-amber-400" />
                 </button>
                 <button 
+                  type="button"
                   onClick={() => downloadPhoto(photo)}
-                  className="w-12 h-12 rounded-full bg-white hover:bg-slate-200 text-slate-900 flex items-center justify-center transition-all hover:scale-110 shadow-lg"
-                  title="Download Photo"
+                  className="btn-tactile w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center border border-white/20 hover:border-amber-400"
+                  title="Unduh Foto"
                 >
-                  <Download className="w-5 h-5" />
+                  <Download className="w-4 h-4 text-white" />
                 </button>
                 <button 
+                  type="button"
                   onClick={() => handleDelete(photo.id)}
-                  className="w-12 h-12 rounded-full bg-red-500 hover:bg-red-400 text-white flex items-center justify-center transition-all hover:scale-110 shadow-lg"
-                  title="Delete Photo"
+                  className="btn-tactile w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center border border-white/20 hover:border-red-400"
+                  title="Hapus"
                 >
-                  <Trash2 className="w-5 h-5" />
+                  <Trash2 className="w-4 h-4 text-red-400" />
                 </button>
               </div>
             </div>
             
-            {/* Share Status Bar */}
-            {photo.share_token && (
-              <div className="p-3 bg-brand-900/30 flex justify-between items-center text-xs border-t border-brand-500/20">
-                <span className="flex items-center gap-1.5 text-brand-300 font-medium">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></div>
-                  Shared Publicly
-                </span>
+            {/* Share status footer */}
+            <div className="p-3 border-t border-white/10 flex justify-between items-center text-[11px] text-slate-400">
+              <span>{new Date(photo.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</span>
+              {photo.share_token && (
                 <button 
+                  type="button"
                   onClick={() => {
                     navigator.clipboard.writeText(`${window.location.origin}/share/${photo.share_token}`);
                     setCopiedLink(photo.id);
-                    setTimeout(() => setCopiedLink(null), 3000);
+                    setTimeout(() => setCopiedLink(null), 2500);
                   }}
-                  className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                  className="flex items-center gap-1 text-amber-300 hover:text-white font-medium"
                 >
-                  {copiedLink === photo.id ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  Copy Link
+                  {copiedLink === photo.id ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                  <span>{copiedLink === photo.id ? 'Tersalin' : 'Salin URL'}</span>
                 </button>
-              </div>
-            )}
-          </motion.div>
+              )}
+            </div>
+          </div>
         ))}
-      </motion.div>
+      </div>
       
       {/* Lightbox Modal */}
       <AnimatePresence>
         {selectedPhoto && (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div 
             onClick={() => setSelectedPhoto(null)}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8"
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8"
+            style={{ overscrollBehavior: 'contain' }}
           >
             <button 
+              type="button"
               onClick={() => setSelectedPhoto(null)}
-              className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
+              className="absolute top-6 right-6 p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/10"
+              title="Tutup"
             >
-              <X className="w-8 h-8" />
+              <X className="w-6 h-6" />
             </button>
             
-            <motion.img 
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
+            <img 
               onClick={(e) => e.stopPropagation()}
               src={selectedPhoto.image_url} 
-              className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+              className="max-w-full max-h-[85vh] object-contain rounded-2xl border border-white/15 shadow-2xl"
               alt="Fullscreen Capture"
             />
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
 
