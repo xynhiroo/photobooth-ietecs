@@ -10,33 +10,81 @@ import {
   Volume2,
   Calendar,
   MapPin,
-  Sparkles
+  Sparkles,
+  Check
 } from 'lucide-react';
-import { TEMPLATES } from '../components/TemplateRenderer';
+import { motion } from 'framer-motion';
+import { TEMPLATES, TemplateRenderer, SAMPLE_PREVIEW_IMAGES } from '../components/TemplateRenderer';
+
+const floatingAnimation = {
+  y: [-8, 8, -8],
+  transition: {
+    duration: 4.5,
+    repeat: Infinity,
+    ease: "easeInOut" as const
+  }
+};
+
+const floatingReverse = {
+  y: [8, -8, 8],
+  transition: {
+    duration: 5.5,
+    repeat: Infinity,
+    ease: "easeInOut" as const
+  }
+};
 
 const Home = () => {
   const [activePreviewId, setActivePreviewId] = useState<number>(1);
   const selectedTemplate = TEMPLATES[activePreviewId] || TEMPLATES[1];
 
   return (
-    <div className="flex flex-col gap-20 pb-16 select-none">
+    <div className="flex flex-col gap-24 pb-16 select-none overflow-hidden">
       
-      {/* HERO SECTION */}
-      <section className="relative pt-6 sm:pt-12 pb-8 flex flex-col items-center text-center">
+      {/* HERO SECTION WITH COLORFUL STAINED GLASS WINDOW & ELEMENTAL CRYSTALS */}
+      <section className="relative pt-6 sm:pt-12 pb-12 flex flex-col items-center text-center">
         
+        {/* Floating Elemental Crystal Gemstones */}
+        <motion.div 
+          animate={floatingAnimation}
+          className="absolute top-2 left-4 sm:left-8 w-16 sm:w-20 opacity-90 pointer-events-none drop-shadow-[0_0_20px_rgba(168,85,247,0.7)] hidden sm:block z-10"
+        >
+          <img src="/hmti_assets/1. INFINITY STONE/Gemstone-03.png" alt="Crystal Amethyst" />
+        </motion.div>
+
+        <motion.div 
+          animate={floatingReverse}
+          className="absolute top-16 right-4 sm:right-12 w-14 sm:w-18 opacity-90 pointer-events-none drop-shadow-[0_0_20px_rgba(16,185,129,0.7)] hidden sm:block z-10"
+        >
+          <img src="/hmti_assets/1. INFINITY STONE/gemstone green-03.png" alt="Crystal Emerald" />
+        </motion.div>
+
+        {/* STAINED GLASS PATRI WINDOW BACKDROP (Vibrant Color & Illumination) */}
+        <div 
+          className="absolute inset-0 -z-20 bg-center bg-no-repeat bg-contain opacity-35 pointer-events-none"
+          style={{ 
+            backgroundImage: `url('/hmti_assets/4.  PATRI WINDOWS/Test4 (NO-BG).png')`,
+            backgroundPosition: 'center 15%'
+          }}
+        />
+        {/* Radial Purple & Gold Ambience Light */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -z-10 w-[650px] h-[550px] bg-purple-600/30 rounded-full blur-[140px] pointer-events-none" />
+        <div className="absolute top-48 left-1/2 -translate-x-1/2 -z-10 w-[550px] h-[450px] bg-amber-500/20 rounded-full blur-[130px] pointer-events-none" />
+        <div className="absolute top-24 left-1/4 -z-10 w-[400px] h-[400px] bg-blue-600/20 rounded-full blur-[120px] pointer-events-none" />
+
         {/* Event Meta Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-white/10 text-slate-300 text-xs font-semibold mb-6">
-          <span className="w-2 h-2 rounded-full bg-amber-400" />
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950/85 border border-amber-400/40 text-slate-200 text-xs font-semibold mb-6 shadow-md backdrop-blur-md">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
           <span>HMTI Fair 2026 • Pollux Mall Batam Center</span>
         </div>
         
-        {/* Main Headline - Solid High Contrast Typography */}
-        <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white font-serif max-w-4xl leading-[1.12]">
+        {/* Main Headline */}
+        <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold tracking-tight text-white font-serif max-w-4xl leading-[1.12] drop-shadow-md">
           Abadikan Momen Terbaikmu di HMTI Fair
         </h1>
         
         {/* Subtitle */}
-        <p className="text-base sm:text-lg text-slate-300 mt-6 max-w-2xl leading-relaxed px-4">
+        <p className="text-base sm:text-lg text-slate-200 mt-6 max-w-2xl leading-relaxed px-4 drop-shadow">
           Photobooth interaktif bertema <strong className="text-amber-300 font-semibold">Kaca Jendela Patri & Kristal Elemen</strong>. 
           Ambil pose berurutan, cetak langsung lembar fisik 4R 300 DPI di stan booth, dan simpan versi digital ke HP lewat QR Code.
         </p>
@@ -45,7 +93,7 @@ const Home = () => {
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-8 w-full sm:w-auto px-4 z-20">
           <Link 
             to="/booth" 
-            className="btn-tactile w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 px-8 py-4 rounded-full font-bold text-base shadow-lg shadow-amber-400/10 cursor-pointer"
+            className="btn-tactile w-full sm:w-auto inline-flex items-center justify-center gap-2.5 bg-amber-400 hover:bg-amber-300 text-slate-950 px-8 py-4 rounded-full font-bold text-base shadow-xl shadow-amber-400/20 cursor-pointer"
           >
             <Camera className="w-5 h-5 text-slate-950" />
             <span>Buka Studio Photobooth</span>
@@ -53,19 +101,19 @@ const Home = () => {
           </Link>
           <Link 
             to="/templates" 
-            className="btn-tactile w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white px-7 py-4 rounded-full font-semibold text-sm border border-white/10"
+            className="btn-tactile w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-950/80 hover:bg-slate-900 text-slate-200 hover:text-white px-7 py-4 rounded-full font-semibold text-sm border border-amber-400/30 backdrop-blur-md"
           >
-            <Layers className="w-4 h-4 text-slate-400" />
+            <Layers className="w-4 h-4 text-amber-400" />
             <span>Lihat 4 Pilihan Frame</span>
           </Link>
         </div>
 
         {/* HERO SHOWCASE CARD (LCP Image optimized per Modern Web Guidance) */}
         <div className="mt-14 w-full max-w-4xl px-2">
-          <div className="surface-card p-6 sm:p-8 rounded-3xl border border-white/10 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 text-left">
+          <div className="surface-card bg-slate-950/85 p-6 sm:p-8 rounded-3xl border border-amber-400/30 relative overflow-hidden flex flex-col md:flex-row items-center gap-8 text-left shadow-2xl backdrop-blur-md">
             
             {/* LCP Visual - Gobi The Mascot with high priority */}
-            <div className="relative w-36 h-36 sm:w-44 sm:h-44 shrink-0 rounded-2xl bg-purple-950/60 border border-purple-500/20 flex items-center justify-center p-3">
+            <div className="relative w-36 h-36 sm:w-44 sm:h-44 shrink-0 rounded-2xl bg-purple-950/80 border border-purple-400/40 flex items-center justify-center p-3 shadow-lg">
               <img 
                 src="/hmti_assets/7. RANDOM STONE/gobi pose 2.png" 
                 alt="Maskot HMTI Gobi The Guardian"
@@ -85,14 +133,14 @@ const Home = () => {
                 Gobi The Guardian Siap Memandu Foto Kamu!
               </h2>
               <p className="text-sm text-slate-300 leading-relaxed">
-                Tersedia 4 pilihan template frame eksklusif: The Grand Patriarch, Crystal Arcana, Twin Strips (2x6 inci), dan Royal Quad 4-Cut. Semua frame dirancang dengan rasio cetak 4R presisi 300 DPI dengan margin aman printer tanpa terpotong.
+                Tersedia 4 pilihan template frame eksklusif dengan ornamen kaca patri dan kristal elemen. Seluruh frame dirancang dengan rasio cetak 4R presisi 300 DPI dengan margin aman printer tanpa terpotong.
               </p>
               
-              <div className="pt-2 flex flex-wrap gap-4 text-xs text-slate-400">
-                <span className="flex items-center gap-1.5 text-slate-300">
+              <div className="pt-2 flex flex-wrap gap-4 text-xs text-slate-300">
+                <span className="flex items-center gap-1.5 font-medium">
                   <Calendar className="w-4 h-4 text-amber-400" /> 28-29 November 2026
                 </span>
-                <span className="flex items-center gap-1.5 text-slate-300">
+                <span className="flex items-center gap-1.5 font-medium">
                   <MapPin className="w-4 h-4 text-amber-400" /> Pollux Mall Batam Center
                 </span>
               </div>
@@ -102,40 +150,45 @@ const Home = () => {
         </div>
       </section>
 
-      {/* INTERACTIVE FRAME EXPLORER */}
+      {/* INTERACTIVE FRAME EXPLORER WITH REAL VISUAL PREVIEW */}
       <section className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-10">
-          <h2 className="text-2xl sm:text-4xl font-bold text-white font-serif">
+          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest px-3 py-1 rounded-full bg-amber-400/15 border border-amber-400/30">
+            Preview Frame Asli
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-bold text-white font-serif mt-3">
             Eksplorasi Pilihan Frame Acara
           </h2>
-          <p className="text-slate-400 text-sm mt-2 max-w-lg mx-auto">
-            Klik varian di bawah untuk melihat detail format cetak dan jumlah pose yang dibutuhkan.
+          <p className="text-slate-300 text-sm mt-2 max-w-lg mx-auto">
+            Klik pilihan frame di bawah untuk melihat preview bentuk frame lengkap dengan ornamen dan format cetaknya.
           </p>
         </div>
 
         {/* Template Selector Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-2.5 mb-8">
           {Object.values(TEMPLATES).map((tmpl) => (
             <button
               key={tmpl.id}
               type="button"
               onClick={() => setActivePreviewId(tmpl.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-colors cursor-pointer ${
+              className={`btn-tactile px-4 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activePreviewId === tmpl.id
-                  ? 'bg-amber-400 text-slate-950 font-bold shadow'
-                  : 'bg-slate-900 text-slate-400 hover:text-white border border-white/5'
+                  ? 'bg-amber-400 text-slate-950 shadow-md border border-amber-300'
+                  : 'bg-slate-900/80 text-slate-300 hover:text-white border border-white/10'
               }`}
             >
-              {tmpl.name}
+              <span>{tmpl.name}</span>
             </button>
           ))}
         </div>
 
-        {/* Selected Frame Detail Display */}
-        <div className="surface-card p-6 sm:p-8 rounded-3xl border border-white/10 max-w-3xl mx-auto flex flex-col sm:flex-row items-center gap-8">
-          <div className="w-full sm:w-1/2 space-y-4">
-            <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider">
-              {selectedTemplate.category}
+        {/* Selected Frame Detail Display with REAL CANVAS PREVIEW */}
+        <div className="surface-card bg-slate-950/90 p-6 sm:p-8 rounded-3xl border border-amber-400/30 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-8 shadow-2xl">
+          
+          {/* Left: Info & Details */}
+          <div className="w-full md:w-1/2 space-y-4 text-left">
+            <span className="text-[11px] font-bold text-amber-300 uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/15 border border-amber-400/30">
+              {selectedTemplate.badge}
             </span>
             <h3 className="text-2xl font-bold text-white font-serif">
               {selectedTemplate.name}
@@ -144,43 +197,44 @@ const Home = () => {
               {selectedTemplate.description}
             </p>
             
-            <div className="pt-2 space-y-2 text-xs text-slate-400 border-t border-white/10">
+            <div className="pt-2 space-y-2.5 text-xs text-slate-300 border-t border-white/10">
               <div className="flex justify-between py-1">
-                <span>Format Kertas Fisik:</span>
+                <span className="text-slate-400">Format Kertas Fisik:</span>
                 <span className="text-white font-semibold">{selectedTemplate.printFormat} (4R / 300 DPI)</span>
               </div>
               <div className="flex justify-between py-1">
-                <span>Jumlah Pose Diambil:</span>
-                <span className="text-amber-300 font-bold">{selectedTemplate.photosRequired} Pose Kamera</span>
+                <span className="text-slate-400">Kebutuhan Pose Kamera:</span>
+                <span className="text-amber-300 font-bold">{selectedTemplate.photosRequired} Pose Otomatis</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-slate-400">Margin Aman Potong:</span>
+                <span className="text-emerald-400 font-semibold flex items-center gap-1">
+                  <Check className="w-3.5 h-3.5" /> 48px Safe Bleed Area
+                </span>
               </div>
             </div>
 
             <Link
               to={`/booth?template=${selectedTemplate.id}`}
-              className="btn-tactile inline-flex items-center gap-2 bg-slate-100 hover:bg-white text-slate-950 px-6 py-2.5 rounded-xl font-bold text-xs mt-2"
+              className="btn-tactile inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-950 px-6 py-3 rounded-full font-bold text-xs shadow-md mt-2"
             >
-              <Camera className="w-4 h-4" />
-              <span>Gunakan Frame Ini</span>
+              <Camera className="w-4 h-4 text-slate-950" />
+              <span>Gunakan Frame Ini di Booth</span>
             </Link>
           </div>
 
-          <div className="w-full sm:w-1/2 flex justify-center">
-            <div className="w-48 h-72 rounded-2xl bg-[#090b14] border border-amber-400/30 p-3 flex flex-col justify-between shadow-xl text-center">
-              <div className="text-[9px] font-bold text-amber-200 uppercase tracking-wider">
-                HMTI FAIR 2026
-              </div>
-              <div className="flex flex-col gap-2 my-auto">
-                {Array.from({ length: selectedTemplate.photosRequired }).map((_, i) => (
-                  <div key={i} className="w-full h-14 bg-slate-900 rounded-md border border-white/10 flex items-center justify-center text-[9px] text-slate-500 font-medium">
-                    Pose {i + 1}
-                  </div>
-                ))}
-              </div>
-              <div className="text-[8px] text-slate-400 font-medium">
-                POLLUX MALL BATAM
+          {/* Right: REAL VISUAL FRAME PREVIEW */}
+          <div className="w-full md:w-1/2 flex justify-center">
+            <div className="relative w-[240px] h-[360px] rounded-2xl bg-[#030208] border-2 border-amber-400/40 shadow-2xl flex items-center justify-center overflow-hidden">
+              <div className="transform scale-[0.38] origin-center shrink-0 pointer-events-none select-none">
+                <TemplateRenderer
+                  templateId={selectedTemplate.id}
+                  images={SAMPLE_PREVIEW_IMAGES}
+                />
               </div>
             </div>
           </div>
+
         </div>
       </section>
 
@@ -190,7 +244,7 @@ const Home = () => {
           <h2 className="text-2xl sm:text-4xl font-bold text-white font-serif">
             Kesiapan Booth & Teknologi Handal
           </h2>
-          <p className="text-slate-400 text-sm mt-2 max-w-lg mx-auto">
+          <p className="text-slate-300 text-sm mt-2 max-w-lg mx-auto">
             Didesain khusus untuk kelancaran antrean acara kampus dan mall tanpa hambatan.
           </p>
         </div>
@@ -231,9 +285,9 @@ const Home = () => {
       </section>
 
       {/* FOOTER */}
-      <footer className="text-center text-xs text-slate-500 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-3 max-w-5xl mx-auto px-4 w-full">
+      <footer className="text-center text-xs text-slate-400 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-center gap-3 max-w-5xl mx-auto px-4 w-full">
         <p>© 2026 HMTI Fair • Jurusan Teknik Informatika Politeknik Negeri Batam</p>
-        <p className="text-slate-400">Stan Acara: Pollux Mall Batam Center</p>
+        <p className="text-slate-300">Stan Acara: Pollux Mall Batam Center</p>
       </footer>
 
     </div>
