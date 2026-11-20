@@ -9,13 +9,9 @@ import Templates from './pages/Templates';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen font-sans selection:bg-amber-400/30 text-slate-100">
-        <div className="aurora-bg"></div>
-        <div className="aurora-blob pointer-events-none text-purple-900/30 w-[50vw] h-[50vw] top-[-10%] left-[-10%]"></div>
-        <div className="aurora-blob pointer-events-none text-amber-500/10 w-[60vw] h-[60vw] bottom-[-20%] right-[-10%]"></div>
-
+      <div className="min-h-screen font-sans bg-[#07090e] patri-pattern-bg text-slate-100 flex flex-col">
         <Navbar />
-        <main className="container mx-auto px-4 sm:px-6 pt-24 pb-8 sm:pb-12 relative z-10 max-w-6xl">
+        <main className="flex-1 container mx-auto px-4 sm:px-6 pt-24 pb-12 max-w-6xl">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/templates" element={<Templates />} />

@@ -10,7 +10,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setIsScrolled(window.scrollY > 15);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -24,29 +24,33 @@ const Navbar = () => {
 
   return (
     <header 
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-slate-950/85 backdrop-blur-xl border-b border-amber-400/30 shadow-2xl' : 'bg-transparent'
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
+        isScrolled 
+          ? 'bg-[#07090e]/90 backdrop-blur-md border-b border-white/[0.08] shadow-sm' 
+          : 'bg-transparent'
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-6 h-20 flex items-center justify-between max-w-6xl">
+      <div className="container mx-auto px-4 sm:px-6 h-18 flex items-center justify-between max-w-6xl">
         {/* Brand */}
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-800 via-indigo-600 to-amber-500 p-0.5 shadow-lg shadow-purple-500/30 border border-amber-300/40 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-slate-900 border border-white/10 flex items-center justify-center transition-colors group-hover:border-amber-400/40">
             <img 
               src="/hmti_assets/5. LOGO HMTI, POLIBATAM, FAIR/Salinan HMTI.png" 
               alt="HMTI Logo" 
-              className="w-7 h-7 object-contain" 
+              className="w-6 h-6 object-contain" 
             />
           </div>
           <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-white to-amber-400 font-serif">
-                HMTI FAIR
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold tracking-tight text-white font-serif">
+                HMTI FAIR 2026
               </span>
-              <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-amber-400/20 text-amber-300 font-bold">2026</span>
+              <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-400/15 text-amber-300 font-semibold border border-amber-400/30">
+                Pollux Mall
+              </span>
             </div>
-            <span className="block text-[8px] font-bold text-amber-300/90 tracking-widest uppercase">
-              Official Photobooth Kiosk
+            <span className="block text-[10px] text-slate-400 font-medium tracking-wider uppercase">
+              Official Photobooth Studio
             </span>
           </div>
         </Link>
@@ -57,8 +61,10 @@ const Navbar = () => {
             <Link 
               key={link.name} 
               to={link.path} 
-              className={`text-sm font-semibold transition-colors hover:text-amber-300 ${
-                location.pathname === link.path ? 'text-amber-300 border-b-2 border-amber-400 pb-1' : 'text-slate-300'
+              className={`text-xs font-semibold tracking-wide transition-colors hover:text-amber-300 ${
+                location.pathname === link.path 
+                  ? 'text-amber-300 border-b-2 border-amber-400 pb-1' 
+                  : 'text-slate-300'
               }`}
             >
               {link.name}
@@ -67,51 +73,54 @@ const Navbar = () => {
           
           <Link 
             to="/booth" 
-            className="flex items-center gap-2 bg-gradient-to-r from-purple-700 via-indigo-600 to-amber-500 hover:from-purple-600 hover:to-amber-400 text-white px-5 py-2.5 rounded-full text-xs font-black shadow-lg shadow-purple-500/25 transition-all hover:scale-105 border border-amber-300/40 cursor-pointer"
+            className="btn-tactile inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-300 text-slate-950 px-5 py-2.5 rounded-full text-xs font-bold shadow-md cursor-pointer"
           >
-            <Camera className="w-4 h-4 text-amber-300" />
+            <Camera className="w-4 h-4 text-slate-950" />
             <span>Mulai Foto</span>
           </Link>
         </nav>
 
         {/* Mobile Toggle */}
         <button 
+          type="button"
+          aria-label={mobileMenuOpen ? "Tutup menu" : "Buka menu"}
           className="md:hidden p-2 text-slate-300 hover:text-white"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
-          {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Dropdown */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden absolute top-full left-0 right-0 bg-slate-950/95 backdrop-blur-2xl border-b border-amber-400/30"
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.15 }}
+            className="md:hidden bg-[#0a0d16] border-b border-white/10 px-6 py-5 shadow-2xl"
           >
-            <div className="flex flex-col px-6 py-6 gap-4">
+            <div className="flex flex-col gap-3">
               {navLinks.map((link) => (
                 <Link 
                   key={link.name} 
                   to={link.path}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-sm font-bold ${
-                    location.pathname === link.path ? 'text-amber-300' : 'text-slate-300'
+                  className={`text-sm py-2 font-medium ${
+                    location.pathname === link.path ? 'text-amber-300 font-bold' : 'text-slate-300'
                   }`}
                 >
                   {link.name}
                 </Link>
               ))}
               <Link 
-                to="/booth"
+                to="/booth" 
                 onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-700 to-amber-500 text-white py-3 rounded-xl text-sm font-black shadow-lg border border-amber-300/40"
+                className="btn-tactile mt-2 flex items-center justify-center gap-2 bg-amber-400 text-slate-950 py-3 rounded-xl text-xs font-bold"
               >
-                <Camera className="w-4 h-4 text-amber-300" />
-                Masuk ke Studio Photobooth
+                <Camera className="w-4 h-4" />
+                Mulai Berfoto
               </Link>
             </div>
           </motion.div>

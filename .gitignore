@@ -7,3 +7,5 @@ frontend/.env
 *.ai
 *.part
 .DS_Store
+.agents/
+skills-lock.json
