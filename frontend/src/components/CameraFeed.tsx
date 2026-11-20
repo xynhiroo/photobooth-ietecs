@@ -9,7 +9,7 @@ import {
   Volume2, 
   VolumeX, 
   Sparkles, 
-  StopCircle 
+  Square
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { soundEffects } from '../utils/audioEffects';
@@ -28,10 +28,10 @@ interface CameraFeedProps {
 }
 
 const POSE_PROMPTS = [
-  'Pose 1: Tunjukkan Kristal Terkuatmu! 💎',
-  'Pose 2: Gaya Bebas & Santuy bareng Bestie! 😎',
-  'Pose 3: Senyum Manis Pesona HMTI! ✨',
-  'Pose 4: Gaya Juara Rise Beyond Infinity! 🚀',
+  'Pose 1: Tunjukkan Gaya Terbaikmu!',
+  'Pose 2: Gaya Bebas & Ceria bareng Bestie!',
+  'Pose 3: Senyum Manis Pesona HMTI!',
+  'Pose 4: Gaya Juara Rise Beyond Infinity!',
 ];
 
 const CameraFeed = ({ 
@@ -124,7 +124,7 @@ const CameraFeed = ({
 
       // Buffer time for changing poses if not first shot
       if (taken > currentPhotosCount) {
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 1400));
       }
       if (abortSequenceRef.current) break;
 
@@ -155,13 +155,13 @@ const CameraFeed = ({
       captureSingle();
       taken++;
 
-      await new Promise(resolve => setTimeout(resolve, 200));
+      await new Promise(resolve => setTimeout(resolve, 180));
       setFlash(false);
 
       // Brief pause between shots
       if (taken < totalToTake && !abortSequenceRef.current) {
         setPosePrompt('Bagus! Bersiap untuk pose berikutnya...');
-        await new Promise(resolve => setTimeout(resolve, 1200));
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
     }
 
@@ -178,14 +178,14 @@ const CameraFeed = ({
   };
 
   const currentDeviceLabel = devices.find(d => d.deviceId === selectedDeviceId)?.label 
-    || (devices.length > 0 ? 'Kamera Utama' : 'Default Camera');
+    || (devices.length > 0 ? 'Kamera Utama' : 'Kamera');
 
   const videoConstraints: MediaTrackConstraints = selectedDeviceId
     ? { deviceId: { exact: selectedDeviceId }, width: { ideal: 1920 }, height: { ideal: 1080 } }
     : { facingMode: 'user', width: { ideal: 1920 }, height: { ideal: 1080 } };
 
   return (
-    <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[4/3] w-full max-w-4xl mx-auto border-4 border-amber-400/30 shadow-[0_0_60px_rgba(46,16,101,0.7)] group select-none">
+    <div className="relative rounded-3xl overflow-hidden bg-black aspect-[4/3] w-full max-w-4xl mx-auto border border-white/10 shadow-2xl group select-none">
       
       <Webcam
         audio={false}
@@ -198,11 +198,11 @@ const CameraFeed = ({
         mirrored={isMirrored}
       />
 
-      {/* Stained Glass Corner Brackets */}
-      <div className="absolute top-4 left-4 w-10 h-10 border-t-4 border-l-4 border-amber-400/70 rounded-tl-xl pointer-events-none"></div>
-      <div className="absolute top-4 right-4 w-10 h-10 border-t-4 border-r-4 border-amber-400/70 rounded-tr-xl pointer-events-none"></div>
-      <div className="absolute bottom-4 left-4 w-10 h-10 border-b-4 border-l-4 border-amber-400/70 rounded-bl-xl pointer-events-none"></div>
-      <div className="absolute bottom-4 right-4 w-10 h-10 border-b-4 border-r-4 border-amber-400/70 rounded-br-xl pointer-events-none"></div>
+      {/* Subtle Corner Markers */}
+      <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-amber-400/80 rounded-tl pointer-events-none" />
+      <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-amber-400/80 rounded-tr pointer-events-none" />
+      <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-amber-400/80 rounded-bl pointer-events-none" />
+      <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-amber-400/80 rounded-br pointer-events-none" />
 
       {/* Top Header Overlay: Device Switcher, Mirror Toggle & Sound */}
       <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-30 pointer-events-auto">
@@ -212,28 +212,28 @@ const CameraFeed = ({
             type="button"
             onClick={() => setShowDeviceMenu(!showDeviceMenu)}
             disabled={isCapturingSequence}
-            className="flex items-center gap-2 bg-slate-950/85 hover:bg-slate-900 text-white/90 hover:text-white px-3.5 py-2 rounded-xl backdrop-blur-md border border-amber-400/30 text-xs font-semibold shadow-xl transition-all disabled:opacity-50"
+            className="flex items-center gap-2 bg-slate-950/80 hover:bg-slate-900 text-slate-200 hover:text-white px-3 py-1.5 rounded-xl backdrop-blur-md border border-white/10 text-xs font-medium transition-all disabled:opacity-50"
             title="Pilih Kamera"
           >
-            <SwitchCamera className="w-4 h-4 text-amber-400" />
-            <span className="max-w-[140px] sm:max-w-[200px] truncate">{currentDeviceLabel}</span>
+            <SwitchCamera className="w-3.5 h-3.5 text-amber-400" />
+            <span className="max-w-[130px] sm:max-w-[180px] truncate">{currentDeviceLabel}</span>
             <ChevronDown className={`w-3.5 h-3.5 opacity-60 transition-transform ${showDeviceMenu ? 'rotate-180' : ''}`} />
           </button>
 
           <AnimatePresence>
             {showDeviceMenu && (
               <motion.div
-                initial={{ opacity: 0, y: -8, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -8, scale: 0.95 }}
-                transition={{ duration: 0.15 }}
-                className="absolute top-full left-0 mt-2 w-64 bg-slate-950/95 backdrop-blur-xl border border-amber-400/40 rounded-xl p-1.5 shadow-2xl z-40 space-y-1"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.12 }}
+                className="absolute top-full left-0 mt-2 w-60 bg-slate-950/95 backdrop-blur-md border border-white/10 rounded-xl p-1 shadow-xl z-40 space-y-0.5"
               >
-                <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-300">
+                <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   Sumber Kamera ({devices.length})
                 </div>
                 {devices.length === 0 ? (
-                  <div className="px-3 py-2 text-xs text-slate-400">Tidak ada kamera terdeteksi</div>
+                  <div className="px-3 py-1.5 text-xs text-slate-400">Tidak ada kamera terdeteksi</div>
                 ) : (
                   devices.map((device, idx) => (
                     <button
@@ -243,9 +243,9 @@ const CameraFeed = ({
                         setSelectedDeviceId(device.deviceId);
                         setShowDeviceMenu(false);
                       }}
-                      className={`w-full flex items-center justify-between px-3 py-2 text-xs rounded-lg text-left transition-colors ${
+                      className={`w-full flex items-center justify-between px-2.5 py-1.5 text-xs rounded-lg text-left transition-colors ${
                         selectedDeviceId === device.deviceId
-                          ? 'bg-amber-400/20 text-amber-300 font-bold border border-amber-400/30'
+                          ? 'bg-amber-400/20 text-amber-300 font-semibold'
                           : 'text-slate-300 hover:bg-white/10 hover:text-white'
                       }`}
                     >
@@ -265,41 +265,41 @@ const CameraFeed = ({
           <button
             type="button"
             onClick={() => setSoundEnabled(prev => !prev)}
-            className={`flex items-center justify-center w-9 h-9 rounded-xl backdrop-blur-md border text-xs transition-all shadow-lg ${
+            className={`flex items-center justify-center w-8 h-8 rounded-xl backdrop-blur-md border text-xs transition-all ${
               soundEnabled 
                 ? 'bg-amber-400/20 border-amber-400/40 text-amber-300' 
-                : 'bg-slate-950/80 border-white/10 text-slate-400 hover:text-white'
+                : 'bg-slate-950/70 border-white/10 text-slate-400 hover:text-white'
             }`}
             title={soundEnabled ? 'Efek Suara Aktif' : 'Efek Suara Dibisukan'}
           >
-            {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
           </button>
 
           {/* Mirror Toggle */}
           <button
             type="button"
             onClick={() => setIsMirrored(prev => !prev)}
-            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl backdrop-blur-md border text-xs font-semibold transition-all shadow-lg ${
+            className={`flex items-center gap-1 px-2.5 py-1.5 rounded-xl backdrop-blur-md border text-xs font-medium transition-all ${
               isMirrored 
-                ? 'bg-purple-600/30 border-purple-400/50 text-white' 
-                : 'bg-slate-950/80 hover:bg-slate-900 border-white/15 text-slate-300 hover:text-white'
+                ? 'bg-slate-900 border-white/20 text-white' 
+                : 'bg-slate-950/70 hover:bg-slate-900 border-white/10 text-slate-400 hover:text-white'
             }`}
             title={isMirrored ? 'Cermin Aktif' : 'Cermin Nonaktif'}
           >
-            <FlipHorizontal className={`w-4 h-4 ${isMirrored ? 'text-purple-300' : 'text-slate-400'}`} />
-            <span className="hidden sm:inline">{isMirrored ? 'Mirror On' : 'Mirror Off'}</span>
+            <FlipHorizontal className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline">{isMirrored ? 'Mirror' : 'Normal'}</span>
           </button>
         </div>
       </div>
 
-      {/* White flash overlay */}
+      {/* Flash overlay */}
       <AnimatePresence>
         {flash && (
           <motion.div 
             initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: 0.12 }}
             className="absolute inset-0 bg-white pointer-events-none z-30"
           />
         )}
@@ -309,13 +309,13 @@ const CameraFeed = ({
       <AnimatePresence>
         {posePrompt && (
           <motion.div 
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -15 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="absolute top-20 left-6 right-6 flex justify-center z-25 pointer-events-none"
+            exit={{ opacity: 0, y: -15 }}
+            className="absolute top-18 left-6 right-6 flex justify-center z-25 pointer-events-none"
           >
-            <div className="bg-slate-950/90 border-2 border-amber-400/60 text-amber-200 px-6 py-2.5 rounded-2xl shadow-2xl backdrop-blur-md font-bold text-center text-sm sm:text-base flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-amber-400 animate-spin" />
+            <div className="bg-slate-950/90 border border-amber-400/40 text-amber-200 px-5 py-2 rounded-xl shadow-lg backdrop-blur-md font-semibold text-center text-xs sm:text-sm flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-400" />
               <span>{posePrompt}</span>
             </div>
           </motion.div>
@@ -327,14 +327,14 @@ const CameraFeed = ({
         {currentCountdown !== null && (
           <motion.div 
             key={currentCountdown}
-            initial={{ opacity: 0, scale: 0.4 }}
+            initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.4 }}
-            transition={{ duration: 0.28 }}
+            exit={{ opacity: 0, scale: 1.2 }}
+            transition={{ duration: 0.2 }}
             className="absolute inset-0 flex items-center justify-center z-25 pointer-events-none"
           >
-            <div className="w-48 h-48 rounded-full bg-slate-950/60 border-4 border-amber-400/80 backdrop-blur-md flex items-center justify-center shadow-[0_0_80px_rgba(251,191,36,0.6)]">
-              <span className="text-[7.5rem] font-black text-amber-300 leading-none drop-shadow-[0_0_30px_rgba(251,191,36,0.9)]">
+            <div className="w-36 h-36 rounded-full bg-slate-950/70 border-2 border-amber-400/70 backdrop-blur-md flex items-center justify-center shadow-xl">
+              <span className="text-7xl font-bold text-amber-300 leading-none">
                 {currentCountdown}
               </span>
             </div>
@@ -343,31 +343,29 @@ const CameraFeed = ({
       </AnimatePresence>
 
       {/* Controls Overlay */}
-      <div className="absolute bottom-8 left-0 right-0 flex items-center justify-center gap-4 z-20">
+      <div className="absolute bottom-6 left-0 right-0 flex items-center justify-center gap-4 z-20">
         {!isCapturingSequence ? (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            type="button"
             onClick={runSequence}
-            className="flex items-center gap-3 px-8 py-4 rounded-full font-black text-white transition-all border-2 border-amber-300 bg-gradient-to-r from-purple-700 via-indigo-600 to-amber-600 shadow-[0_0_35px_rgba(251,191,36,0.5)] cursor-pointer"
+            className="btn-tactile inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full font-bold text-slate-950 bg-amber-400 hover:bg-amber-300 shadow-lg cursor-pointer"
             title="Mulai Sesi Otomatis"
           >
-            <Camera className="w-6 h-6 text-amber-300" />
-            <span className="tracking-wide">
-              {requiredPhotos > 1 ? `MULAI SESI (${requiredPhotos} FOTO)` : 'AMBIL FOTO'}
+            <Camera className="w-5 h-5 text-slate-950" />
+            <span className="text-sm tracking-wide">
+              {requiredPhotos > 1 ? `Mulai Sesi (${requiredPhotos} Pose)` : 'Ambil Foto'}
             </span>
-          </motion.button>
+          </button>
         ) : (
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+          <button
+            type="button"
             onClick={cancelSequence}
-            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white bg-red-600/90 border-2 border-red-400 backdrop-blur-md shadow-xl cursor-pointer"
-            title="Batalkan Sesi"
+            className="btn-tactile inline-flex items-center gap-2 px-6 py-2.5 rounded-full font-semibold text-white bg-red-600/90 hover:bg-red-500 border border-red-400 backdrop-blur-md shadow-lg cursor-pointer text-xs"
+            title="Hentikan Sesi"
           >
-            <StopCircle className="w-5 h-5" />
-            <span>Batalkan</span>
-          </motion.button>
+            <Square className="w-3.5 h-3.5" />
+            <span>Hentikan</span>
+          </button>
         )}
       </div>
     </div>
